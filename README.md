@@ -39,6 +39,7 @@ NODE_ENV="development"
 DEV_PORT=3001
 BUILD_PATH="./dist/build"
 DATABASE_URL=<DB_URL>
+SECRET_KEY=<ANY_SECRET_KEY>
 ```
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
