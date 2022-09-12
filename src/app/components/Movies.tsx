@@ -37,6 +37,7 @@ const Movies = () => {
       return (
         <tr key={"item_" + (i + 1)}>
           <td>{i + 1}</td>
+          <td width={100}>{movie.id}</td>
           <td>{movie.name}</td>
           <td width={100} className="text-center">
             <button className="btn btn-sm" onClick={() => onClickDelete(movie.id)}>
@@ -52,6 +53,7 @@ const Movies = () => {
         <thead>
           <tr>
             <th>Sl no.</th>
+            <th>Movie Id</th>
             <th>Name</th>
             <th className="text-center">Action</th>
           </tr>

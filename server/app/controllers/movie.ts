@@ -53,7 +53,6 @@ export const getAllMovies = (req: Request, res: Response) => {
 // Delete a Movie with the specified id in the request
 export const deleteOneMovie = (req: Request, res: Response) => {
   const id = req.params.id;
-
   MovieModel.destroy({
     where: { id: id }
   })

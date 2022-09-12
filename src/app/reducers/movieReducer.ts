@@ -46,6 +46,22 @@ export const movieReducer = (
       return {
         ...state,
       };
+
+    case MovieAction.DELETE_MOVIE.PROCESSING:
+      return {
+        ...state,
+      };
+    case MovieAction.DELETE_MOVIE.SUCCESS: {
+      return {
+        ...state,
+        allMovies: state.allMovies.filter(movie => movie.id !== action.payload),
+      };
+    }
+    case MovieAction.DELETE_MOVIE.RESET:
+    case MovieAction.DELETE_MOVIE.FAILED:
+      return {
+        ...state,
+      };
     default:
       return state;
   }

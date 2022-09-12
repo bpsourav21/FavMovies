@@ -65,14 +65,12 @@ export const deleteMovie = (id: number) => {
     apiService
       .delete(`/movies/` + id)
       .then((res) => {
-        const data = res.data;
         dispatch({
           type: MovieAction.DELETE_MOVIE.SUCCESS,
-          payload: data
+          payload: id
         });
         dispatch(onHandleAlert("Movie deleted successfully", true));
         dispatch(showLoader(false));
-        dispatch(getAllMovies());
       })
       .catch((e) => {
         dispatch({

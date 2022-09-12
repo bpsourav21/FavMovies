@@ -11,7 +11,10 @@ const requireAuth = passport.authenticate("jwt", {
 // Add movie
 router.post("/add-movie", requireAuth, validateAddingMovie, movie.addMovie);
 
-// Login
+// Get all movies
 router.get("/", requireAuth, movie.getAllMovies);
+
+// Delete a movie
+router.delete("/:id", requireAuth, movie.deleteOneMovie);
 
 export default router;
