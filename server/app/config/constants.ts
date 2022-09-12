@@ -1,4 +1,3 @@
 export const Constants = {
-    SECRET_KEY: "mySecretKey",
-    AUTH_KEY: "authToken"
+    SECRET_KEY: process.env.SECRET_KEY || "mySecretKey"
 }

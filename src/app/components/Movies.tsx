@@ -29,7 +29,9 @@ const Movies = () => {
       id: 0 // Ideally Id will be overriden
     }
 
-    dispatch(addMovie(movie));
+    dispatch(addMovie(movie, () => {
+      target.reset();
+    }));
   }
 
   const renderTable = () => {
