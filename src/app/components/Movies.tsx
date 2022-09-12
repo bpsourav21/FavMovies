@@ -2,12 +2,12 @@ import React from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import _ from "underscore";
-import { deleteMovie, getAllMovies } from "../actions/movieActions";
+import { addMovie, deleteMovie, getAllMovies } from "../actions/movieActions";
 import { MovieDto } from "../dtos/movie";
 import { useAppSelector, useAppDispatch } from "../hooks";
 
 const Movies = () => {
-  const allMovies = useAppSelector((state) => state.movie.allmovies);
+  const allMovies = useAppSelector((state) => state.movie.allMovies);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -21,11 +21,22 @@ const Movies = () => {
     }
   }
 
+  const onAddMovie = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    var target = e.currentTarget as HTMLFormElement;
+    const movie: MovieDto = {
+      name: target._movieName.value,
+      id: 0 // Ideally Id will be overriden
+    }
+
+    dispatch(addMovie(movie));
+  }
+
   const renderTable = () => {
     const rowData = _.map(allMovies, (movie: MovieDto, i: number) => {
       return (
         <tr key={"item_" + (i + 1)}>
-
+          <td>{i + 1}</td>
           <td>{movie.name}</td>
           <td width={100} className="text-center">
             <button className="btn btn-sm" onClick={() => onClickDelete(movie.id)}>
@@ -40,6 +51,7 @@ const Movies = () => {
       <table className="table table-striped table-hover table-bordered">
         <thead>
           <tr>
+            <th>Sl no.</th>
             <th>Name</th>
             <th className="text-center">Action</th>
           </tr>
@@ -51,10 +63,21 @@ const Movies = () => {
 
   return (
     <div className="page">
-      <h1>Movie Information</h1>
-      <div className="d-grid gap-2 d-md-flex d-sm-flex justify-content-md-end justify-content-sm-end mb-3">
-        <button className="btn btn-primary" onClick={() => navigate("/add-Movie")}>Add Movie</button>
-      </div>
+      <h1>Favourite Movie List</h1>
+      <br />
+      <form onSubmit={(e) => onAddMovie(e)}>
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Add Movie"
+            name="_movieName"
+          />
+          <div className="input-group-append">
+            <button type="submit" className="btn btn-primary">Add</button>
+          </div>
+        </div>
+      </form>
       {renderTable()}
     </div>
   );

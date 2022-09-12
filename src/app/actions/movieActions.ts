@@ -2,11 +2,13 @@
 import { MovieDto } from "../dtos/movie";
 import apiService from "../service/apiService";
 import { AppDispatch } from "../store";
-import { AlertAction, MovieAction } from "./actionTypes";
+import { MovieAction } from "./actionTypes";
+import { onHandleAlert, showLoader } from './commonAction'
 
 export const getAllMovies = () => {
   return (dispatch: AppDispatch) => {
     dispatch({ type: MovieAction.GET_ALL_MOVIES.PROCESSING });
+    dispatch(showLoader(true));
     apiService
       .get(`/movies`)
       .then((res) => {
@@ -15,41 +17,14 @@ export const getAllMovies = () => {
           type: MovieAction.GET_ALL_MOVIES.SUCCESS,
           payload: data
         });
+        dispatch(showLoader(false));
       })
       .catch((e) => {
         dispatch({
           type: MovieAction.GET_ALL_MOVIES.FAILED,
           payload: e,
         });
-      });
-  };
-};
-
-
-export const resetMovie = () => {
-  return (dispatch: AppDispatch) => {
-    dispatch({ type: MovieAction.GET_MOVIE.RESET });
-  }
-}
-
-export const getOneMovie = (id: number) => {
-  return (dispatch: AppDispatch) => {
-    dispatch({ type: MovieAction.GET_MOVIE.PROCESSING });
-    apiService
-      .get(`/movies/` + id)
-      .then((res) => {
-        const data: MovieDto = res.data;
-        dispatch({
-          type: MovieAction.GET_MOVIE.SUCCESS,
-          payload: data
-        });
-      })
-      .catch((e) => {
-        dispatch({
-          type: MovieAction.GET_MOVIE.FAILED,
-          payload: e,
-        });
-        dispatch(onHandleAlert("No movie found", false));
+        dispatch(showLoader(false));
       });
   };
 };
@@ -57,15 +32,17 @@ export const getOneMovie = (id: number) => {
 export const addMovie = (movie: MovieDto, cb?: VoidFunction) => {
   return (dispatch: AppDispatch) => {
     dispatch({ type: MovieAction.ADD_NEW_MOVIE.PROCESSING });
+    dispatch(showLoader(true));
     apiService
-      .post(`/movies/`, movie)
+      .post(`/movies/add-movie/`, movie)
       .then((res) => {
         const data = res.data;
         dispatch({
           type: MovieAction.ADD_NEW_MOVIE.SUCCESS,
           payload: data
         });
-        dispatch(onHandleAlert("movie Added successfully", true));
+        dispatch(showLoader(false));
+        dispatch(onHandleAlert("Movie Added successfully", true));
         if (cb) {
           cb();
         }
@@ -75,7 +52,8 @@ export const addMovie = (movie: MovieDto, cb?: VoidFunction) => {
           type: MovieAction.ADD_NEW_MOVIE.FAILED,
           payload: e,
         });
-        dispatch(onHandleAlert("movie Added failed", false));
+        dispatch(showLoader(false));
+        dispatch(onHandleAlert("Movie Added failed", false));
       });
   };
 };
@@ -83,6 +61,7 @@ export const addMovie = (movie: MovieDto, cb?: VoidFunction) => {
 export const deleteMovie = (id: number) => {
   return (dispatch: AppDispatch) => {
     dispatch({ type: MovieAction.DELETE_MOVIE.PROCESSING });
+    dispatch(showLoader(true));
     apiService
       .delete(`/movies/` + id)
       .then((res) => {
@@ -91,7 +70,8 @@ export const deleteMovie = (id: number) => {
           type: MovieAction.DELETE_MOVIE.SUCCESS,
           payload: data
         });
-        dispatch(onHandleAlert("movie deleted successfully", true));
+        dispatch(onHandleAlert("Movie deleted successfully", true));
+        dispatch(showLoader(false));
         dispatch(getAllMovies());
       })
       .catch((e) => {
@@ -99,19 +79,8 @@ export const deleteMovie = (id: number) => {
           type: MovieAction.DELETE_MOVIE.FAILED,
           payload: e,
         });
-        dispatch(onHandleAlert("movie deleted failed", false));
+        dispatch(onHandleAlert("Movie deleted failed", false));
+        dispatch(showLoader(false));
       });
-  };
-};
-
-export const onHandleAlert = (msg: string, isSuccess: boolean = true) => {
-  return (dispatch: AppDispatch) => {
-    dispatch({
-      type: isSuccess ? AlertAction.SUCCESS : AlertAction.FAILED,
-      payload: msg
-    });
-    setTimeout(() => {
-      dispatch({ type: AlertAction.NONE });
-    }, 3000)
   };
 };

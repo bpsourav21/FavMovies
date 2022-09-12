@@ -5,14 +5,12 @@ import {
 import { getAuthToken } from "../actions/authActions";
 
 export interface AuthState {
-  isLoading: boolean;
   loginErrorMsg: string;
   isAuthenticated: boolean;
 }
 
 const isAuthPresent = !_.isEmpty(getAuthToken());
 const initialState: AuthState = {
-  isLoading: false,
   loginErrorMsg: "",
   isAuthenticated: isAuthPresent,
 };
@@ -25,20 +23,32 @@ export const authReducer = (
     case AuthAction.LOGIN.PROCESSING:
       return {
         ...state,
-        isLoading: true,
         loginErrorMsg: "",
       };
     case AuthAction.LOGIN.SUCCESS:
       return {
         ...state,
         isAuthenticated: true,
-        isLoading: false,
       };
     case AuthAction.LOGIN.FAILED:
       return {
         ...state,
-        isLoading: false,
         isAuthenticated: false,
+        loginErrorMsg: action.payload,
+      };
+
+    case AuthAction.SIGNUP.PROCESSING:
+      return {
+        ...state,
+        loginErrorMsg: "",
+      };
+    case AuthAction.SIGNUP.SUCCESS:
+      return {
+        ...state,
+      };
+    case AuthAction.SIGNUP.FAILED:
+      return {
+        ...state,
         loginErrorMsg: action.payload,
       };
     case AuthAction.LOGOUT:

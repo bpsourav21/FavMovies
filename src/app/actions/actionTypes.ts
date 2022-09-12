@@ -21,6 +21,7 @@ const requestGenerator = (action: string): string => {
 
 export const AuthAction = {
   LOGIN: actionGenerator("LOGIN"),
+  SIGNUP: actionGenerator("SIGNUP"),
   LOGOUT: requestGenerator("LOGOUT"),
   AUTHENTICATION: requestGenerator("AUTHENTICATION"),
 };

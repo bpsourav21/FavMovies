@@ -6,7 +6,27 @@ import express from "express";
 import routes from "./app/routes";
 import cors from "cors";
 import path from 'path';
-import { initDbConnection } from "./app/db/init";
+import sequelize from "./app/config/dbConfig";
+import passport from "./app/config/passport";
+
+const initDbConnection = new Promise((resolve, reject) => {
+  // db sequelize
+  // drop the table if resync
+  let resync = false //process.env.NODE_ENV === "development";
+  sequelize
+    .sync({ force: resync })
+    .then(() => {
+      let msg = resync
+        ? "Drop and re-sync db."
+        : "Synced db."
+      console.log(msg);
+      return resolve("Db connected");
+    })
+    .catch((err) => {
+      console.log("Failed to sync db: " + err.message);
+      return reject(err.message)
+    });
+})
 
 const initAppConfig = () => {
   const app = express();
@@ -16,6 +36,9 @@ const initAppConfig = () => {
   };
 
   app.use(cors(corsOptions));
+
+  // This will initialize the passport object on every request
+  app.use(passport.initialize());
 
   // parse requests of content-type - application/json
   app.use(express.json());
@@ -38,7 +61,7 @@ const initAppConfig = () => {
   app.use(express.static(path.join(__dirname, '../build')));
 
   // Handle React routing, return all requests to React app
-  app.get('*', function (req, res) {
+  app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../build', 'index.html'));
   });
 

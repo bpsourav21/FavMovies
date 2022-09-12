@@ -5,12 +5,19 @@ import NotFound from "./components/NotFound";
 import Movies from "./components/Movies";
 import React from "react";
 import Login from "./components/Login";
+import Signup from "./components/Signup";
 import { AuthProvider } from "./container/AuthProvider";
 import { ProtectedRoute } from "./container/ProtectedRoute";
+import AlertComponent from "./components/AlertComponent";
+import LoadingOverlay from "./components/LoadingOverlay";
+import { useAppSelector } from "./hooks";
 
 const App = () => {
+  const isLoading = useAppSelector((state) => state.common.isLoading);
+  const alert = useAppSelector((state) => state.common.alert);
+
   return (
-    <div className="fluid-container">
+    <div className="container">
       <BrowserRouter>
         <AuthProvider>
           <Routes>
@@ -21,10 +28,13 @@ const App = () => {
               </Route>
             </Route>
             <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
+      {isLoading && <LoadingOverlay />}
+      {alert != null && <AlertComponent alert={alert} />}
     </div>
   );
 };

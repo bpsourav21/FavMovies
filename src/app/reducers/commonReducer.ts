@@ -1,4 +1,4 @@
-import { AlertAction } from "../actions/actionTypes";
+import { AlertAction, LoadingAction } from "../actions/actionTypes";
 
 export interface AlertType {
   message: string;
@@ -37,6 +37,13 @@ export const commonReducer = (
         ...state,
         alert: null
       }
+
+    case LoadingAction.LOADING:
+      return {
+        ...state,
+        isLoading: action.payload
+      }
+
     default:
       return state;
   }

@@ -1,30 +1,39 @@
 import { Request, Response } from "express";
 import _ from 'underscore';
 import { MovieDto, MovieModel } from "../models/Movie";
+import { UserAttribute } from "../models/User";
 
 // Add new movie
 export const addMovie = (req: Request, res: Response) => {
-  const movie: MovieDto = {
-    name: req.body.name,
-    userId: req.body.userId
-  };
+  if (req.user) {
+    const user = req.user as UserAttribute
+    const movie: MovieDto = {
+      name: req.body.name,
+      userId: user.id
+    };
 
-  // Save Movie in the database
-  MovieModel.create(movie)
-    .then((data) => {
-      res.send("Movie added")
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the Profile.",
+    // Save Movie in the database
+    MovieModel.create(movie)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the Profile.",
+        });
       });
-    });
+  }
+  else {
+    res.status(401).send("User not logged in")
+  }
 };
 
 // Retrieve all Movies for a user from the database.
 export const getAllMovies = (req: Request, res: Response) => {
-  const userId = req.query.userId as string;
+  const userId = req.user
+    ? (req.user as UserAttribute).id
+    : req.query.userId as string;
   var condition = userId ? { userId: userId } : undefined;
 
   MovieModel.findAll({

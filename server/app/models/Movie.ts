@@ -5,7 +5,7 @@ import {
   InferCreationAttributes,
   CreationOptional,
 } from "sequelize";
-import sequelize from "../db/index";
+import sequelize from "../config/dbConfig";
 import { UserModel } from "./User";
 
 export type MovieAttribute = InferAttributes<MovieModel>;

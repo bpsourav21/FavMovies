@@ -2,17 +2,11 @@ import { MovieAction } from "../actions/actionTypes";
 import { MovieDto } from "../dtos/movie";
 
 export interface movieState {
-  isLoading: boolean;
-  allmovies: MovieDto[];
-  movie: MovieDto;
+  allMovies: MovieDto[];
 }
 
-const emptymovie = {} as MovieDto;
-
 const initialState: movieState = {
-  isLoading: false,
-  allmovies: [],
-  movie: emptymovie
+  allMovies: []
 };
 
 export const movieReducer = (
@@ -23,42 +17,34 @@ export const movieReducer = (
     case MovieAction.GET_ALL_MOVIES.PROCESSING:
       return {
         ...state,
-        allmovies: [],
-        isLoading: true,
+        allMovies: [],
       };
     case MovieAction.GET_ALL_MOVIES.SUCCESS:
       return {
         ...state,
-        allmovies: action.payload,
-        isLoading: false,
+        allMovies: action.payload,
       };
     case MovieAction.GET_ALL_MOVIES.FAILED:
       return {
         ...state,
-        allmovies: [],
-        isLoading: false,
+        allMovies: [],
       };
 
-    case MovieAction.GET_MOVIE.PROCESSING:
+    case MovieAction.ADD_NEW_MOVIE.PROCESSING:
       return {
         ...state,
-        movie: emptymovie,
-        isLoading: true,
       };
-    case MovieAction.GET_MOVIE.SUCCESS: {
-      const currentmovie = action.payload as MovieDto;
+    case MovieAction.ADD_NEW_MOVIE.SUCCESS: {
+      const movie = action.payload as MovieDto;
       return {
         ...state,
-        movie: currentmovie,
-        isLoading: false,
+        allMovies: state.allMovies.concat(movie),
       };
     }
-    case MovieAction.GET_MOVIE.RESET:
-    case MovieAction.GET_MOVIE.FAILED:
+    case MovieAction.ADD_NEW_MOVIE.RESET:
+    case MovieAction.ADD_NEW_MOVIE.FAILED:
       return {
         ...state,
-        movie: emptymovie,
-        isLoading: false,
       };
     default:
       return state;

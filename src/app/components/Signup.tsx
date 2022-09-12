@@ -1,30 +1,28 @@
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { login } from "../actions/authActions";
-import { LoginDto } from "../dtos/auth";
+import { Link, useNavigate } from "react-router-dom";
+import { signup } from "../actions/authActions";
+import { SignupDto } from "../dtos/auth";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { AuthState } from "../reducers/authReducer";
 
-const Login = () => {
+const Signup = () => {
   const authState: AuthState = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  //@ts-ignore
-  const redirectPath = location.state?.path || "/";
 
-  const onSubmitLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmitSignup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     var target = e.currentTarget as HTMLFormElement;
 
-    const loginData: LoginDto = {
+    const signUpCred: SignupDto = {
+      name: target._name.value,
       email: target._email.value,
-      password: target._password.value
+      password: target._password.value,
     }
 
     dispatch(
-      login(loginData, () => {
-        navigate(redirectPath, { replace: true });
+      signup(signUpCred, () => {
+        navigate("/login", { replace: true });
       })
     );
   };
@@ -35,8 +33,19 @@ const Login = () => {
         <div className="col-12 col-md-8 col-lg-6 col-xl-5">
           <div className="card shadow-2-strong" style={{ borderRadius: 1 }}>
             <div className="card-body p-5">
-              <form onSubmit={(e) => onSubmitLogin(e)}>
-                <h2 className="text-center mb-2">Login</h2>
+              <form onSubmit={(e) => onSubmitSignup(e)}>
+                <h2 className="text-center mb-2">Signup</h2>
+                <div className="input-group mb-2">
+                  <span className="input-group-text" id="basic-addon1">
+                    <i className="bi bi-person-badge"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Name"
+                    name="_name"
+                  />
+                </div>
                 <div className="input-group mb-2">
                   <span className="input-group-text" id="basic-addon1">
                     <i className="bi bi-envelope-fill"></i>
@@ -64,9 +73,9 @@ const Login = () => {
                     type="submit"
                     className="btn btn-primary btn-block mt-2 mb-2 "
                   >
-                    LOG IN
+                    Signup
                   </button>
-                  <p className="mt-2">Register here <Link to="/signup">Signup</Link></p>
+                  <p className="mt-2">Already registered? <Link to="/login">Login</Link></p>
                   <p style={{ color: "red", height: "10px" }}>
                     {authState.loginErrorMsg}
                   </p>
@@ -80,4 +89,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

@@ -8,11 +8,5 @@ export const validateAddingMovie = [
     .not()
     .isEmpty()
     .withMessage("Name Empty"),
-  check("userId")
-    .exists()
-    .withMessage("User Id is missing")
-    .not()
-    .isEmpty()
-    .withMessage("User Id is Empty"),
   validationHandler
 ];

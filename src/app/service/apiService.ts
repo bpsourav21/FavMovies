@@ -1,7 +1,7 @@
 import axios from "axios";
+import { getAuthToken } from "../actions/authActions";
 
 export const API_ENDPOINT = process.env.PUBLIC_URL || "http://localhost:3001";
-export const UPLOAD_ENDPOINT = API_ENDPOINT + "/uploads/";
 const baseURL = API_ENDPOINT + "/api/";
 
 const apiService = axios.create({
@@ -11,4 +11,22 @@ const apiService = axios.create({
   },
 });
 
+apiService.interceptors.request.use((request) => {
+  const authToken = getAuthToken();
+  if (authToken) {
+    request.headers!["Authorization"] = `Bearer ${authToken}`;
+  }
+  return request;
+});
+
+apiService.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error.response.data);
+  }
+);
+
 export default apiService;
+
